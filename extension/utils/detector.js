@@ -50,11 +50,12 @@ const detectCaptchaType = () => {
   for (const img of images) {
     if (hasCaptchaAttributes(img) && isVisible(img)) {
       // check if it looks like a grid (wider than tall suggests grid)
-      const ratio = img.naturalWidth / img.naturalHeight
-      if (ratio > 2) {
-        return { type: 'grid', element: img }
-      }
-      return { type: 'text', element: img }
+      // only classify as grid if it has actual grid child elements
+            const hasGridChildren = img.querySelector('td, [class*="tile"], [class*="grid"]')
+            if (hasGridChildren) {
+              return { type: 'grid', element: img }
+            }
+            return { type: 'text', element: img }
     }
   }
 
